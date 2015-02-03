@@ -8,24 +8,36 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import br.com.util.ParametrosGlobais;
+
+import br.com.auxiliar.Retorno;
+import br.com.rede.BuscaCapt;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.Toast;
 import android.widget.TabHost.TabContentFactory;
   
 
-public class TabsViewPagerFragmentActivity extends FragmentActivity implements TabHost.OnTabChangeListener, ViewPager.OnPageChangeListener {
+public class TabsViewPagerFragmentActivity extends FragmentActivity implements TabHost.OnTabChangeListener, ViewPager.OnPageChangeListener, Retorno {
  
 	private TabHost mTabHost;
     private ViewPager mViewPager;
@@ -33,6 +45,8 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
     private PagerAdapter mPagerAdapter;
     private Fragment currentFragment;
     private String responseText = null;
+    
+    private BuscaCapt buscaCapt;
 
     private class TabInfo {
          private String tag;
@@ -75,26 +89,22 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
         }
 
         this.intialiseViewPager();
-        
-        DefaultHttpClient httpclient = new DefaultHttpClient();
-    	HttpPost httppostreq = new HttpPost("https://compreagora-juniobc.c9.io/htdocs/desenvolvimento/public/compracerta/home/index");
-    	
-    	try {
-    		
-			HttpResponse httpresponse = httpclient.execute(httppostreq);
-			responseText = "passou";
-			//responseText = EntityUtils.toString(httpresponse.getEntity());
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			responseText = "Erro na requisicao: " + e.getMessage();
-			e.printStackTrace();
-		}
-        
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(responseText).create().show();
 		
     }
+    
+    public void buscarNfe(View view){
+    	
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    	builder.setMessage("teste").create().show();
+    	
+    }
+    
+    public void buscarCapt(){
+
+    	buscaCapt = new BuscaCapt(TabsViewPagerFragmentActivity.this, TabsViewPagerFragmentActivity.this, ParametrosGlobais.ORIGEM_ACTIVITY);
+    	buscaCapt.execute();
+		
+    } 
 
     protected void onSaveInstanceState(Bundle outState) {
         outState.putString("tab", mTabHost.getCurrentTabTag()); //save the tab selected
@@ -202,6 +212,13 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
     public void onPageSelected(int position) {
         // TODO Auto-generated method stub
         this.mTabHost.setCurrentTab(position);
+        
+        if(position==1){
+        	
+        	buscarCapt();
+        	
+        }
+        
     }
  
     /* (non-Javadoc)
@@ -212,5 +229,34 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
         // TODO Auto-generated method stub
  
     }
+
+	@Override
+	public void TrataJson(String str) {
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		currentFragment = mPagerAdapter.getItem(mViewPager.getCurrentItem());
+		
+		try{
+			
+			JSONObject dados;
+			
+			JSONObject json = new JSONObject(str);
+			dados = json.getJSONObject("dados");
+			//teste = dados.getString("token");			
+			//builder.setMessage(teste).create().show();
+			
+			ImageView img = (ImageView) currentFragment.getView().findViewById(R.id.img_capt);
+        	
+        	byte[] decodedString = Base64.decode(dados.getString("img"), Base64.DEFAULT);
+        	Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length); 
+        	img.setImageBitmap(decodedByte);
+					
+		}catch(JSONException e){
+			
+			builder.setMessage(e.getMessage()).create().show();
+			
+		}
+		
+	}
  
 }
