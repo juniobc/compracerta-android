@@ -5,12 +5,18 @@
     android:background="@drawable/tab_bg_selector"
     android:padding="10dip" android:gravity="center" android:orientation="vertical">
     
-    <ImageButton
+    <!--<ImageButton
        android:id="@+id/img_tab"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
        android:layout_weight="1"
        android:background="#636265"
-       android:src="@drawable/home" />
+       android:src="@drawable/consulta" />-->
+    
+    <TextView 
+       android:id="@+id/txt_aba"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="Consulta"/>
     
 </LinearLayout>

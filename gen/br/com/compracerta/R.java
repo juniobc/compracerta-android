@@ -12,27 +12,33 @@ public final class R {
     }
     public static final class drawable {
         public static final int buscar_borda=0x7f020000;
-        public static final int config=0x7f020001;
-        public static final int home=0x7f020002;
-        public static final int ic_launcher=0x7f020003;
-        public static final int mapa=0x7f020004;
-        public static final int tab_bg_selected=0x7f020005;
-        public static final int tab_bg_selector=0x7f020006;
-        public static final int text_borda=0x7f020007;
+        public static final int cadastro=0x7f020001;
+        public static final int config=0x7f020002;
+        public static final int consulta=0x7f020003;
+        public static final int home3=0x7f020004;
+        public static final int ic_launcher=0x7f020005;
+        public static final int mapa=0x7f020006;
+        public static final int tab_bg_selected=0x7f020007;
+        public static final int tab_bg_selector=0x7f020008;
+        public static final int text_borda=0x7f020009;
     }
     public static final class id {
-        public static final int btn_busca_nfe=0x7f050009;
+        public static final int btn_busca_nfe=0x7f05000a;
         public static final int cd_capt=0x7f050007;
+        public static final int chave_acesso=0x7f050009;
         public static final int et_numero=0x7f050004;
         public static final int et_resultado=0x7f050006;
+        public static final int event_validation=0x7f05000c;
         public static final int img_btn_buslinha=0x7f050005;
         public static final int img_capt=0x7f050008;
-        public static final int img_tab=0x7f05000c;
-        public static final int produtos_nfe=0x7f05000a;
+        public static final int produtos_nfe=0x7f05000e;
         public static final int scan_button=0x7f050001;
         public static final int scan_content=0x7f050003;
         public static final int scan_format=0x7f050002;
-        public static final int tabsLayout=0x7f05000b;
+        public static final int tabsLayout=0x7f05000f;
+        public static final int token=0x7f05000d;
+        public static final int txt_aba=0x7f050010;
+        public static final int view_state=0x7f05000b;
         public static final int viewpager=0x7f050000;
     }
     public static final class layout {

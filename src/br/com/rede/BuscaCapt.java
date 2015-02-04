@@ -48,7 +48,7 @@ public class BuscaCapt extends AsyncTask<String, Void, String> {
 	
 	@Override
 	protected void onPostExecute(String result) {
-		ret.TrataJson(result);
+		ret.TrataJson(result, "busca_capt");
 		if(origem == ParametrosGlobais.ORIGEM_ACTIVITY)
 			pd.dismiss();
 	}

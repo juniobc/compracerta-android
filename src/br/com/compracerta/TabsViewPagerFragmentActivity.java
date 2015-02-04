@@ -16,6 +16,7 @@ import br.com.util.ParametrosGlobais;
 
 import br.com.auxiliar.Retorno;
 import br.com.rede.BuscaCapt;
+import br.com.rede.BuscaNfe;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -27,12 +28,14 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.Base64;
 import android.view.LayoutInflater;
+import android.view.TextureView;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.TabHost.TabContentFactory;
   
@@ -47,6 +50,7 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
     private String responseText = null;
     
     private BuscaCapt buscaCapt;
+    private BuscaNfe buscaNfe;
 
     private class TabInfo {
          private String tag;
@@ -94,8 +98,15 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
     
     public void buscarNfe(View view){
     	
-    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    	builder.setMessage("teste").create().show();
+    	TextView captcha = (TextView) currentFragment.getView().findViewById(R.id.cd_capt);
+    	TextView chave_acesso = (TextView) currentFragment.getView().findViewById(R.id.chave_acesso);
+    	TextView view_state = (TextView) currentFragment.getView().findViewById(R.id.view_state);
+		TextView event_validation = (TextView) currentFragment.getView().findViewById(R.id.event_validation);
+		TextView token = (TextView) currentFragment.getView().findViewById(R.id.token);
+		
+		buscaNfe = new BuscaNfe(TabsViewPagerFragmentActivity.this, TabsViewPagerFragmentActivity.this, ParametrosGlobais.ORIGEM_ACTIVITY);
+		buscaNfe.execute(new String[]{captcha.getText().toString(), chave_acesso.getText().toString(), 
+				view_state.getText().toString(),event_validation.getText().toString(), token.getText().toString()});
     	
     }
     
@@ -116,7 +127,7 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
         List<Fragment> fragments = new Vector<Fragment>();
         fragments.add(Fragment.instantiate(this, Tab1Fragment.class.getName()));
         fragments.add(Fragment.instantiate(this, Tab2Fragment.class.getName()));
-        fragments.add(Fragment.instantiate(this, Tab3Fragment.class.getName()));
+        //fragments.add(Fragment.instantiate(this, Tab3Fragment.class.getName()));
         this.mPagerAdapter  = new PagerAdapter(super.getSupportFragmentManager(), fragments);
 
         this.mViewPager = (ViewPager)super.findViewById(R.id.viewpager);
@@ -160,20 +171,19 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
     private static View createTabView(final Context context, final int tab) {
     	
 	    View view = LayoutInflater.from(context).inflate(R.layout.tabs_bg, null);
-	    ImageButton img_btn = (ImageButton) view.findViewById(R.id.img_tab);
+	    //ImageButton img_btn = (ImageButton) view.findViewById(R.id.img_tab);
+	    TextView txt_aba = (TextView) view.findViewById(R.id.txt_aba);
 	    
 	    switch(tab){
 	    
 		    case 0:
-		    	img_btn.setImageResource(R.drawable.home);
+		    	//img_btn.setImageResource(R.drawable.consulta);
+		    	txt_aba.setText("Consulta");
 		    	break;
 		    	
 		    case 1:
-		    	img_btn.setImageResource(R.drawable.mapa);
-		    	break;
-		    	
-		    case 2:
-		    	img_btn.setImageResource(R.drawable.config);
+		    	//img_btn.setImageResource(R.drawable.cadastro);
+		    	txt_aba.setText("Cadastro");
 		    	break;
 	    
 	    }
@@ -231,25 +241,38 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
     }
 
 	@Override
-	public void TrataJson(String str) {
+	public void TrataJson(String str, String tp_consulta) {
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		currentFragment = mPagerAdapter.getItem(mViewPager.getCurrentItem());
 		
 		try{
 			
-			JSONObject dados;
-			
-			JSONObject json = new JSONObject(str);
-			dados = json.getJSONObject("dados");
-			//teste = dados.getString("token");			
-			//builder.setMessage(teste).create().show();
-			
-			ImageView img = (ImageView) currentFragment.getView().findViewById(R.id.img_capt);
-        	
-        	byte[] decodedString = Base64.decode(dados.getString("img"), Base64.DEFAULT);
-        	Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length); 
-        	img.setImageBitmap(decodedByte);
+			if(tp_consulta == "busca_capt"){	
+				
+				JSONObject dados;
+				
+				JSONObject json = new JSONObject(str);
+				dados = json.getJSONObject("dados");
+				
+				ImageView img = (ImageView) currentFragment.getView().findViewById(R.id.img_capt);
+				TextView view_state = (TextView) currentFragment.getView().findViewById(R.id.view_state);
+				TextView event_validation = (TextView) currentFragment.getView().findViewById(R.id.event_validation);
+				TextView token = (TextView) currentFragment.getView().findViewById(R.id.token);
+	        	
+	        	byte[] decodedString = Base64.decode(dados.getString("img"), Base64.DEFAULT);
+	        	Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length); 
+	        	img.setImageBitmap(decodedByte);
+	        	
+	        	view_state.setText(dados.getString("viewState"));
+	        	event_validation.setText(dados.getString("eventValidation"));
+	        	token.setText(dados.getString("token"));
+	        		        	
+        	}else if(tp_consulta == "busca_nfe"){
+        		
+        		builder.setMessage(str).create().show();
+        		
+        	}
 					
 		}catch(JSONException e){
 			

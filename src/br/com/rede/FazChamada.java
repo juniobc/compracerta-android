@@ -65,7 +65,7 @@ public class FazChamada {
 	        // TODO Auto-generated catch block
 	    	Log.grava(ParametrosGlobais.arq_log, "[fazChamada]->"+e.toString());
 	    }
-	    return responseText;
+	    return httppost.toString();
 	}
 
 	

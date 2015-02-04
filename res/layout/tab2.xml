@@ -23,7 +23,7 @@
 			    android:layout_marginTop="10dp"
 			    android:layout_marginBottom="10dp"
 			    android:layout_marginRight="10dp"
-			    android:inputType="number"
+			    android:inputType="text"
 			    android:background="@drawable/text_borda" />
             
             <ImageView
@@ -36,7 +36,7 @@
         <TableRow>
             
             <EditText  
-	            android:id="@+id/et_numero"
+	            android:id="@+id/chave_acesso"
 			    android:layout_width="50dp" 
 			    android:layout_height="40dp" 
 			    android:layout_weight="1"
@@ -45,6 +45,7 @@
 			    android:layout_marginBottom="10dp"
 			    android:layout_marginRight="10dp"
 			    android:inputType="number"
+			    android:text="31150125759366000170550010048083601049579617"
 			    android:background="@drawable/text_borda" />
 	
 	        <Button
@@ -58,8 +59,27 @@
 	            android:background="@drawable/buscar_borda"
 	            android:text="@string/busca_nfe"
 	            android:textColor="#FFFFFF"
-	            android:onClick="buscar"
+	            android:onClick="buscarNfe"
 	            android:textSize="12sp" />
+	        
+	        <TextView 
+			    android:id="@+id/view_state"
+			    android:layout_width="0dp"
+	            android:layout_height="0dp"
+			    android:visibility="invisible"/>
+		    
+		    <TextView 
+			    android:id="@+id/event_validation"
+			    android:layout_width="0dp"
+	            android:layout_height="0dp"
+			    android:visibility="invisible"/>
+		    
+		    <TextView 
+			    android:id="@+id/token"
+			    android:layout_width="0dp"
+	            android:layout_height="0dp"
+			    android:visibility="invisible"/>
+	        
             
         </TableRow>
 

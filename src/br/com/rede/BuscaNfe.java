@@ -46,14 +46,14 @@ public class BuscaNfe extends AsyncTask<String, Void, String> {
 	protected void onPreExecute() {
 		if(origem == ParametrosGlobais.ORIGEM_ACTIVITY){
 			pd = new ProgressDialog(context);
-			pd.setMessage("Carregando linhas...");
+			pd.setMessage("Carregando Nota Fiscal...");
 			pd.show();
 		}
 	}
 	
 	@Override
 	protected void onPostExecute(String result) {
-		ret.TrataJson(result);
+		ret.TrataJson(result, "busca_nfe");
 		if(origem == ParametrosGlobais.ORIGEM_ACTIVITY)
 			pd.dismiss();
 	}
