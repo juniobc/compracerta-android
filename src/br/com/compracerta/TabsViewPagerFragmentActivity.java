@@ -293,7 +293,7 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
     				JSONArray prod_array = json.getJSONArray("produtos");
     				Produto[] produto = new Produto[prod_array.length()];
     				
-    				for(int i=0;i<prod_array.length();i++){
+    				for(int i=1;i<prod_array.length();i++){
     					Produto prod = new Produto();    					
     					JSONObject jLinha = prod_array.getJSONObject(i);
     					
