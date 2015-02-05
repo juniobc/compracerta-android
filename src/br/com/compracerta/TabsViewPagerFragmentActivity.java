@@ -290,7 +290,7 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
     				    				
     				Empresa emp = new Empresa(empresa.getString("razao_social"), empresa.getString("nm_fantasia"));
     				
-    				JSONArray prod_array = json.getJSONArray("produto");
+    				JSONArray prod_array = json.getJSONArray("produtos");
     				Produto[] produto = new Produto[prod_array.length()];
     				
     				for(int i=0;i<prod_array.length();i++){
@@ -326,7 +326,7 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
     				
     			}else{
     				
-    				builder.setMessage("Código incorreto !").create().show();	
+    				builder.setMessage("CÃ³digo incorreto !").create().show();	
     				
     			}
         		
