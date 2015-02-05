@@ -12,11 +12,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import br.com.auxiliar.LinhaAdapter;
+import br.com.entidade.NotaFiscal;
+
 import br.com.util.ParametrosGlobais;
 
 import br.com.auxiliar.Retorno;
 import br.com.rede.BuscaCapt;
 import br.com.rede.BuscaNfe;
+import br.com.entidade.*;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -48,6 +52,7 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
     private PagerAdapter mPagerAdapter;
     private Fragment currentFragment;
     private String responseText = null;
+    private ListView produtos_nfe;
     
     private BuscaCapt buscaCapt;
     private BuscaNfe buscaNfe;
@@ -98,14 +103,18 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
     
     public void buscarNfe(View view){
     	
-    	TextView captcha = (TextView) currentFragment.getView().findViewById(R.id.cd_capt);
-    	TextView chave_acesso = (TextView) currentFragment.getView().findViewById(R.id.chave_acesso);
+    	currentFragment = mPagerAdapter.getItem(mViewPager.getCurrentItem());
+    	
+    	produtos_nfe = (ListView) currentFragment.getView().findViewById(R.id.produtos_nfe);
+    	
+    	EditText captcha = (EditText) currentFragment.getView().findViewById(R.id.cd_capt);
+    	EditText chave_acesso = (EditText) currentFragment.getView().findViewById(R.id.chave_acesso);
     	TextView view_state = (TextView) currentFragment.getView().findViewById(R.id.view_state);
 		TextView event_validation = (TextView) currentFragment.getView().findViewById(R.id.event_validation);
 		TextView token = (TextView) currentFragment.getView().findViewById(R.id.token);
 		
 		buscaNfe = new BuscaNfe(TabsViewPagerFragmentActivity.this, TabsViewPagerFragmentActivity.this, ParametrosGlobais.ORIGEM_ACTIVITY);
-		buscaNfe.execute(new String[]{captcha.getText().toString(), chave_acesso.getText().toString(), 
+		buscaNfe.execute(new String[]{captcha.getText().toString().toUpperCase(), chave_acesso.getText().toString(), 
 				view_state.getText().toString(),event_validation.getText().toString(), token.getText().toString()});
     	
     }
@@ -270,7 +279,56 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
 	        		        	
         	}else if(tp_consulta == "busca_nfe"){
         		
-        		builder.setMessage(str).create().show();
+        		JSONObject json = new JSONObject(str);
+    			if(json.getInt("ret") == 0){
+    				
+    				JSONObject empresa = new JSONObject(str);
+    				empresa = json.getJSONObject("empresa");
+    				
+    				//JSONObject produto = new JSONObject(str);
+    				//produto = json.getJSONObject("produtos");
+    				    				
+    				Empresa emp = new Empresa(empresa.getString("razao_social"), empresa.getString("nm_fantasia"));
+    				
+    				JSONArray prod_array = json.getJSONArray("produto");
+    				Produto[] produto = new Produto[prod_array.length()];
+    				
+    				for(int i=0;i<prod_array.length();i++){
+    					Produto prod = new Produto();    					
+    					JSONObject jLinha = prod_array.getJSONObject(i);
+    					
+    					prod.setNome(jLinha.getString("nome"));
+    					
+    					produto[i] = prod;
+    					
+    				}
+    				
+    				//Produto prod = new Produto(produto.getInt(""));
+    				
+    				//JSONArray json_array = json.getJSONArray("dt_emis");	
+    				//String teste = json.getString("dt_emis");
+    				//NotaFiscal[] notaFiscal = new NotaFiscal[json_array.length()];
+    				
+    				/*for(int i=0;i<json_array.length();i++){
+    					NotaFiscal nfe = new NotaFiscal();
+    					JSONObject jLinha = json_array.getJSONObject(i);
+    					nfe.numero = jLinha.getString("numero");
+    					nfe.nome = jLinha.getString("nome");
+    			        notaFiscal[i] = nfe;
+    			        
+    				}
+
+    				LinhaAdapter adapter = new LinhaAdapter(currentFragment.getActivity(),R.layout.linha_row,notaFiscal);         
+
+    				produtos_nfe.setAdapter(adapter);*/
+    				
+    				builder.setMessage(produto[0].getNome()).create().show();
+    				
+    			}else{
+    				
+    				builder.setMessage("Código incorreto !").create().show();	
+    				
+    			}
         		
         	}
 					

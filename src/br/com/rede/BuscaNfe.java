@@ -12,7 +12,7 @@ import br.com.util.TemConexao;
 public class BuscaNfe extends AsyncTask<String, Void, String> {
 		
 	Context context;
-	Retorno  ret;
+	Retorno ret;
 	String origem;
 	Fragment fragment;
 	
@@ -29,11 +29,11 @@ public class BuscaNfe extends AsyncTask<String, Void, String> {
 		
 		String[] params = {
 				"https://compreagora-juniobc.c9.io/htdocs/desenvolvimento/public/compracerta/home/buscanfe",
-				"capth="+arg0[0],
-				"chaveAcesso="+arg0[1],
-				"viewState="+arg0[2],
-				"eventValidation="+arg0[3],
-				"token="+arg0[4]
+				"capctha;"+arg0[0],
+				"chave_acesso;"+arg0[1],
+				"viewState;"+arg0[2],
+				"eventValidation;"+arg0[3],
+				"token;"+arg0[4]
 				};
 		
 		if(TemConexao.ativa(context))

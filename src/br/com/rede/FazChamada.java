@@ -44,7 +44,7 @@ public class FazChamada {
 	        // Add your data
 	        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(arg0.length);
 	        for(int i=1;i<arg0.length;i++){
-	        	String[] aux = arg0[i].split("=");
+	        	String[] aux = arg0[i].split(";");
 	        	nameValuePairs.add(new BasicNameValuePair(aux[0], aux[1]));
 	        }
 
@@ -65,7 +65,7 @@ public class FazChamada {
 	        // TODO Auto-generated catch block
 	    	Log.grava(ParametrosGlobais.arq_log, "[fazChamada]->"+e.toString());
 	    }
-	    return httppost.toString();
+	    return responseText;
 	}
 
 	
