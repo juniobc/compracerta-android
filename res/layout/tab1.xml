@@ -37,7 +37,6 @@
 	            android:background="@drawable/buscar_borda"
 	            android:text="@string/busca_nfe"
 	            android:textColor="#FFFFFF"
-	            android:onClick="buscar"
 	            android:textSize="12sp" />
             
         </TableRow>

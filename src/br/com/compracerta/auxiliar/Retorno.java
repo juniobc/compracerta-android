@@ -1,4 +1,4 @@
-package br.com.auxiliar;
+package br.com.compracerta.auxiliar;
 
 import android.support.v4.app.Fragment;
 

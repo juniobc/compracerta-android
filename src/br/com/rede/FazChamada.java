@@ -19,7 +19,7 @@ import org.apache.http.util.EntityUtils;
 import android.app.ProgressDialog;
 import android.content.Context;
 
-import br.com.auxiliar.Retorno;
+import br.com.compracerta.auxiliar.Retorno;
 import br.com.util.Log;
 import br.com.util.ParametrosGlobais;
 

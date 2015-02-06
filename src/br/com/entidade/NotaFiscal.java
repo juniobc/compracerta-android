@@ -4,8 +4,8 @@ public class NotaFiscal {
 	
 	private Empresa emp;
 	private Produto[] prod;
-	private float vl_nfe;
-	private String dt_emis;
+	private float valorNfe;
+	private String dtEmis;
 	
 	public NotaFiscal(){}
 	
@@ -13,9 +13,43 @@ public class NotaFiscal {
 		
 		this.emp = emp;
 		this.prod = prod;
-		this.vl_nfe = vl_nfe;
-		this.dt_emis = dt_emis;
+		this.valorNfe = vl_nfe;
+		this.dtEmis = dt_emis;
 		
 	}
+	
+	public Empresa getEmp() {
+		return emp;
+	}
+
+	public void setEmp(Empresa emp) {
+		this.emp = emp;
+	}
+
+	public Produto[] getProd() {
+		return prod;
+	}
+
+	public void setProd(Produto[] prod) {
+		this.prod = prod;
+	}
+
+	public float getValorNfe() {
+		return valorNfe;
+	}
+
+	public void setValorNfe(float valorNfe) {
+		this.valorNfe = valorNfe;
+	}
+
+	public String getDtEmis() {
+		return dtEmis;
+	}
+
+	public void setDt_emis(String dtEmis) {
+		this.dtEmis = dtEmis;
+	}
+	
+	
 
 }

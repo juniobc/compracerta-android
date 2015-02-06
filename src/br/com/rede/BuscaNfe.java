@@ -5,7 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import br.com.auxiliar.Retorno;
+import br.com.compracerta.auxiliar.Retorno;
 import br.com.util.ParametrosGlobais;
 import br.com.util.TemConexao;
 

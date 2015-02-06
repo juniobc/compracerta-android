@@ -10,7 +10,7 @@
         android:layout_height="wrap_content" >
         
         <TextView
-            android:id="@+id/nm_empresa"
+            android:id="@+id/nm_produto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -19,21 +19,25 @@
             android:layout_marginLeft="15dp"
             android:textAppearance="?android:attr/textAppearanceSmall" />
         
-        <!-- <TextView
+        <TextView
+            android:id="@+id/qt_produto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:textColor="#3FA9F5"
+            android:text="teste"
             android:layout_marginLeft="15dp"
             android:textAppearance="?android:attr/textAppearanceSmall" />
         
         <TextView
+            android:id="@+id/vl_produto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:textColor="#3FA9F5"
+            android:text="teste2"
             android:layout_marginLeft="15dp"
-            android:textAppearance="?android:attr/textAppearanceSmall" />-->
+            android:textAppearance="?android:attr/textAppearanceSmall" />
         
     </LinearLayout>
 
