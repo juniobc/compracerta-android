@@ -5,13 +5,7 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry kind="lib" path="D:/Sebastiao/Projetos/adt-bundle-windows-x86_64-20140702/sdk/platforms/android-19/android.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="file:/D:/Sebastiao/Projetos/adt-bundle-windows-x86_64-20140702/sdk/docs/reference"/>
-		</attributes>
-		<accessrules>
-			<accessrule kind="nonaccessible" pattern="com/android/internal/**"/>
-		</accessrules>
-	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/m1031007/Desktop/leitora/zxing-BS-4.7.0/core/target/core-3.0.2-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="C:/Users/m1031007/Desktop/leitora/zxing-BS-4.7.0/android-core/target/android-core-3.0.2-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

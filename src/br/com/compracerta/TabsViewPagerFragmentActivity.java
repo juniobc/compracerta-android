@@ -301,8 +301,8 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
     					prod.setNome(jLinha.getString("nome"));
     					prod.setCdBarra(Long.parseLong(jLinha.getString("cd_barra")));
     					prod.setCdNmc(Integer.parseInt(jLinha.getString("cd_nmc")));
-    					prod.setCdProduto(Integer.parseInt(jLinha.getString("cd_produto")));
-    					prod.setIcms(Float.parseFloat(jLinha.getString("icms").replace(",", ".")));
+    					//prod.setCdProduto(Integer.parseInt(jLinha.getString("cd_produto")));
+    					//prod.setIcms(Float.parseFloat(jLinha.getString("icms").replace(",", ".")));
     					prod.setPreco(Float.parseFloat(jLinha.getString("valor").replace(",", ".")));
     					//prod.setQuantidade(Integer.parseInt(jLinha.getString("quantidade").replace(",0000", "")));
     					
