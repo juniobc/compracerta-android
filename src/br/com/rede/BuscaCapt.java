@@ -28,7 +28,7 @@ public class BuscaCapt extends AsyncTask<String, Void, String> {
 	protected String doInBackground(String... arg0) {
 		
 		String[] params = {
-				"https://compreagora-juniobc.c9.io/htdocs/desenvolvimento/public/compracerta/home/index"
+				"https://compreagora-juniobc.c9.io/htdocs/producao/public/compracerta/home/index"
 		};
 		
 		if(TemConexao.ativa(context))

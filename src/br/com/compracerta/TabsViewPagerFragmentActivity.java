@@ -1,47 +1,46 @@
 package br.com.compracerta;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import br.com.compracerta.auxiliar.LinhaAdapter;
+import br.com.compracerta.auxiliar.*;
 import br.com.entidade.NotaFiscal;
 
 import br.com.util.ParametrosGlobais;
 
 import br.com.compracerta.auxiliar.Retorno;
-import br.com.rede.BuscaCapt;
-import br.com.rede.BuscaNfe;
+import br.com.rede.*;
 import br.com.entidade.*;
 
+import android.accounts.NetworkErrorException;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.TextureView;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.TabHost.TabContentFactory;
   
 
@@ -54,9 +53,11 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
     private Fragment currentFragment;
     private String responseText = null;
     private ListView produtos_nfe;
+    private ListView produtos_cb;
     
     private BuscaCapt buscaCapt;
     private BuscaNfe buscaNfe;
+    private BuscaCB buscaCB;
 
     private class TabInfo {
          private String tag;
@@ -119,6 +120,45 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
 				view_state.getText().toString(),event_validation.getText().toString(), token.getText().toString()});
     	
     }
+    
+    public void buscarCodigoBarra(View view){
+    	
+    	currentFragment = mPagerAdapter.getItem(mViewPager.getCurrentItem());
+    	produtos_cb = (ListView) currentFragment.getView().findViewById(R.id.produtos_cb);
+    	
+    	Intent intent = new Intent("com.google.zxing.client.android.SCAN"); 
+		intent.setPackage(getPackageName());
+		intent.putExtra("com.google.zxing.client.android.SCAN.SCAN_MODE", "QR_CODE_MODE"); 
+		startActivityForResult(intent, 0);
+    	
+    	//buscaCB = new BuscaCB(TabsViewPagerFragmentActivity.this, TabsViewPagerFragmentActivity.this, ParametrosGlobais.ORIGEM_ACTIVITY);
+		//buscaCB.execute(new String[]{"7896098900253"});
+		//buscaCB.execute(new String[]{"tv"});
+    	
+    }
+    
+    public void onActivityResult(int requestCode, int resultCode, Intent intent){
+		
+		if(requestCode == 0){
+			
+			if(resultCode == RESULT_OK){
+				
+				String contents = intent.getStringExtra("SCAN_RESULT");
+				String format = intent.getStringExtra("SCAN_RESULT_FORMAT");
+				Log.i("xZing", "contents: "+contents+" format: "+format);
+				
+				buscaCB = new BuscaCB(TabsViewPagerFragmentActivity.this, TabsViewPagerFragmentActivity.this, ParametrosGlobais.ORIGEM_ACTIVITY);
+				buscaCB.execute(new String[]{contents});
+				
+			}else if(resultCode == RESULT_CANCELED){
+				
+				Log.i("xZing", "Cancelled");
+				
+			}
+			
+		}
+		
+	}
     
     public void buscarCapt(){
 
@@ -303,7 +343,8 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
     					prod.setCdNmc(Integer.parseInt(jLinha.getString("cd_nmc")));
     					//prod.setCdProduto(Integer.parseInt(jLinha.getString("cd_produto")));
     					//prod.setIcms(Float.parseFloat(jLinha.getString("icms").replace(",", ".")));
-    					prod.setPreco(Float.parseFloat(jLinha.getString("valor").replace(",", ".")));
+    					//prod.setPreco(Float.parseFloat(jLinha.getString("valor").replace(",", ".")));
+    					prod.setPreco(jLinha.getString("valor").replace(",", "."));
     					//prod.setQuantidade(Integer.parseInt(jLinha.getString("quantidade").replace(",0000", "")));
     					
     					produto[i] = prod;
@@ -313,7 +354,7 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
     				//NotaFiscal nfe = new NotaFiscal(emp, produto, Float.parseFloat(json.getString("vl_total")), json.getString("dt_emis"));
     				NotaFiscal nfe = new NotaFiscal(emp, produto, 5, json.getString("dt_emis"));
 
-    				LinhaAdapter adapter = new LinhaAdapter(currentFragment.getActivity(),R.layout.linha_row,nfe.getProd());         
+    				ListaNfe adapter = new ListaNfe(currentFragment.getActivity(),R.layout.lista_nfe,nfe.getProd());         
 
     				produtos_nfe.setAdapter(adapter);
     				
@@ -335,22 +376,79 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
     				
     			}
         		
-        	}
+        	}else if(tp_consulta == "busca_cb"){
+        		
+        		JSONObject json = new JSONObject(str);
+        		
+        		//builder.setMessage().create().show();
+        		
+        		Produto[] produto = new Produto[json.length()];
+        		
+        		Bitmap bitmap;
+        		
+        		for(int i=0;i<json.length();i++){
+        			
+        			Produto prod = new Produto();
+        			
+        			try {
+        				URL url = new URL(json.getJSONObject("1").getString("img_produto"));
+        				bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+        				
+        				prod.setImg(getResizedBitmap(bitmap, 55, 55));
+        			} catch (MalformedURLException e) {
+        				Log.i("ListaCodigoBarra", e.getMessage());
+        			} catch (IOException e) {
+        				Log.i("ListaCodigoBarra", e.getMessage());
+        			}
+        			
+        			prod.setNome(json.getJSONObject(Integer.toString(i+1)).getString("nm_produto"));        			
+        			//prod.setPreco(Float.parseFloat(json.getJSONObject(Integer.toString(i+1)).getString("preco_medio").replace(",", ".")));
+        			prod.setPreco(json.getJSONObject(Integer.toString(i+1)).getString("preco_medio"));
+        			produto[i] = prod;
+        			
+        		}       		
+        		
+        		ListaCodigoBarra adapter = new ListaCodigoBarra(currentFragment.getActivity(),R.layout.lista_cd_barra,produto);         
+
+        		produtos_cb.setAdapter(adapter);
+				
+			}
 					
 		}catch(JSONException e){
 			
-			builder.setMessage(e.getMessage())
-			.setCancelable(false)
-			.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-	           public void onClick(DialogInterface dialog, int id) {
-	        	   buscarCapt();
-	           }
-			}).create().show();
+			if(tp_consulta != "busca_cb"){
+				builder.setMessage(e.getMessage())
+				.setCancelable(false)
+				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		        	   buscarCapt();
+		           }
+				}).create().show();
+			}else{
+				
+				builder.setMessage(e.getMessage()).create().show();
+				
+			}
 			
 			//builder.setMessage(e.getMessage()).create().show();
 			
 		}
 		
+	}
+	
+	public Bitmap getResizedBitmap(Bitmap bm, int newHeight, int newWidth)
+	{
+	    int width = bm.getWidth();
+	    int height = bm.getHeight();
+	    float scaleWidth = ((float) newWidth) / width;
+	    float scaleHeight = ((float) newHeight) / height;
+	    // create a matrix for the manipulation
+	    Matrix matrix = new Matrix();
+	    // resize the bit map
+	    matrix.postScale(scaleWidth, scaleHeight);
+	    // recreate the new Bitmap
+	    Bitmap resizedBitmap = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, false);
+	    return resizedBitmap;
 	}
  
 }

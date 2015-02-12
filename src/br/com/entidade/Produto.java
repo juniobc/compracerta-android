@@ -1,17 +1,20 @@
 package br.com.entidade;
 
+import android.graphics.Bitmap;
+
 public class Produto {
 	
-	private int cdProduto;
+	private String cdProduto;
 	private int cdNmc;
-	private float preco;
+	private String preco;
 	private String nome;
 	private int quantidade;
 	private float icms;
 	private long cdBarra;
+	private Bitmap img;
 	
 	public Produto(){}
-	public Produto(int cd_produto, int cd_nmc, long cd_barra, float preco, String nome, int quantidade, float icms) {
+	public Produto(String cd_produto, int cd_nmc, long cd_barra, String preco, String nome, int quantidade, float icms, Bitmap img) {
 		
 		super();
 		
@@ -22,10 +25,17 @@ public class Produto {
 		this.nome = nome;
 		this.quantidade = quantidade;
 		this.icms = icms;
+		this.img = img;
 		
 	}
 	
-	public int getCdProduto(){
+	public Bitmap getImg(){
+		
+		return img;
+		
+	}	
+	
+	public String getCdProduto(){
 		
 		return cdProduto;
 		
@@ -37,7 +47,7 @@ public class Produto {
 		
 	}
 	
-	public float getPreco(){
+	public String getPreco(){
 		
 		return preco;
 		
@@ -67,8 +77,16 @@ public class Produto {
 		
 	}
 	
+	public Bitmap setImg(Bitmap img){
+		
+		this.img = img;
+		
+		return img;
+		
+	}
 	
-	public int setCdProduto(int cdProduto){
+	
+	public String setCdProduto(String cdProduto){
 		
 		this.cdProduto = cdProduto;
 		
@@ -84,7 +102,7 @@ public class Produto {
 		
 	}
 	
-	public float setPreco(float preco){
+	public String setPreco(String preco){
 		
 		this.preco = preco;
 		

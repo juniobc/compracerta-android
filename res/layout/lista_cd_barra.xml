@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    android:id="@+id/row">
+    
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center" >
+
+        <TableRow>
+
+            <ImageView
+                android:id="@+id/img_produto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/sem_imagem" />
+
+            <TextView
+                android:id="@+id/nm_produto2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:text="Joao e Maria"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="#3FA9F5" />
+
+            <TextView
+                android:id="@+id/vl_produto2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:text="teste2"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="#3FA9F5" />
+        </TableRow>
+        
+    </TableLayout>
+
+</LinearLayout>

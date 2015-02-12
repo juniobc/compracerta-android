@@ -13,18 +13,6 @@
         android:gravity="center" >
         
         <TableRow>
-            
-            <EditText  
-	            android:id="@+id/et_numero"
-			    android:layout_width="50dp" 
-			    android:layout_height="40dp" 
-			    android:layout_weight="1"
-			    android:layout_marginLeft="10dp"
-			    android:layout_marginTop="10dp"
-			    android:layout_marginBottom="10dp"
-			    android:layout_marginRight="10dp"
-			    android:inputType="number"
-			    android:background="@drawable/text_borda" />
 	
 	        <Button
 	            android:id="@+id/img_btn_buslinha"
@@ -37,6 +25,7 @@
 	            android:background="@drawable/buscar_borda"
 	            android:text="@string/busca_nfe"
 	            android:textColor="#FFFFFF"
+	            android:onClick="buscarCodigoBarra"
 	            android:textSize="12sp" />
             
         </TableRow>
@@ -45,7 +34,7 @@
     </TableLayout>
     
     <ListView
-           android:id="@+id/et_resultado"
+           android:id="@+id/produtos_cb"
            android:layout_width="match_parent"
            android:layout_height="wrap_content"
            android:layout_weight="1"

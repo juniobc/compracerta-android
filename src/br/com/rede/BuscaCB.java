@@ -9,7 +9,7 @@ import br.com.compracerta.auxiliar.Retorno;
 import br.com.util.ParametrosGlobais;
 import br.com.util.TemConexao;
 
-public class BuscaNfe extends AsyncTask<String, Void, String> {
+public class BuscaCB extends AsyncTask<String, Void, String> {
 		
 	Context context;
 	Retorno ret;
@@ -18,7 +18,7 @@ public class BuscaNfe extends AsyncTask<String, Void, String> {
 	
 	ProgressDialog pd;
 	
-	public BuscaNfe(Context context, Retorno ret, String origem){
+	public BuscaCB(Context context, Retorno ret, String origem){
 		this.context = context;
 		this.ret = ret;
 		this.origem = origem;
@@ -28,12 +28,8 @@ public class BuscaNfe extends AsyncTask<String, Void, String> {
 	protected String doInBackground(String... arg0) {
 		
 		String[] params = {
-				"https://compreagora-juniobc.c9.io/htdocs/producao/public/compracerta/home/buscanfe",
-				"capctha;"+arg0[0],
-				"chave_acesso;"+arg0[1],
-				"viewState;"+arg0[2],
-				"eventValidation;"+arg0[3],
-				"token;"+arg0[4]
+				"https://compreagora-juniobc.c9.io/htdocs/desenvolvimento/public/compracerta/index/ajax",
+				"nm_produto;"+arg0[0]
 				};
 		
 		if(TemConexao.ativa(context))
@@ -46,14 +42,14 @@ public class BuscaNfe extends AsyncTask<String, Void, String> {
 	protected void onPreExecute() {
 		if(origem == ParametrosGlobais.ORIGEM_ACTIVITY){
 			pd = new ProgressDialog(context);
-			pd.setMessage("Carregando Nota Fiscal...");
+			pd.setMessage("Carregando Codigo de Barra...");
 			pd.show();
 		}
 	}
 	
 	@Override
 	protected void onPostExecute(String result) {
-		ret.TrataJson(result, "busca_nfe");
+		ret.TrataJson(result, "busca_cb");
 		if(origem == ParametrosGlobais.ORIGEM_ACTIVITY)
 			pd.dismiss();
 	}

@@ -1,22 +1,31 @@
 package br.com.compracerta.auxiliar;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import br.com.compracerta.R;
 import br.com.entidade.Produto;
 
-public class LinhaAdapter extends ArrayAdapter<Produto> {
+public class ListaCodigoBarra extends ArrayAdapter<Produto> {
 	Context context;
 	int resource;
 	Produto data[] = null;
-	public LinhaAdapter(Context context, int resource, Produto[] object) {
+	public ListaCodigoBarra(Context context, int resource, Produto[] object) {
 		super(context, resource, object);
 		this.context = context;
 		this.resource = resource;
@@ -40,13 +49,14 @@ public class LinhaAdapter extends ArrayAdapter<Produto> {
 		
 		Produto object = data[position];
 		
-		TextView nm_produto = (TextView) convertView.findViewById(R.id.nm_produto);
+		ImageView img = (ImageView) convertView.findViewById(R.id.img_produto);
+			
+		img.setImageBitmap(object.getImg());
+		
+		TextView nm_produto = (TextView) convertView.findViewById(R.id.nm_produto2);
 		nm_produto.setText(object.getNome());
 		
-		TextView qt_produto = (TextView) convertView.findViewById(R.id.qt_produto);
-		qt_produto.setText("2");
-		
-		TextView vl_produto = (TextView) convertView.findViewById(R.id.vl_produto);
+		TextView vl_produto = (TextView) convertView.findViewById(R.id.vl_produto2);
 		vl_produto.setText(String.valueOf(object.getPreco()));
 
 		/*TextView tv_numero = (TextView) convertView.findViewById(R.id.tv_numero);
