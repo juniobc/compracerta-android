@@ -29,6 +29,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -42,6 +43,7 @@ import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.TabHost.TabContentFactory;
+import android.widget.Toast;
   
 
 public class TabsViewPagerFragmentActivity extends FragmentActivity implements TabHost.OnTabChangeListener, ViewPager.OnPageChangeListener, Retorno {
@@ -293,7 +295,7 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
 	@Override
 	public void TrataJson(String str, String tp_consulta) {
 		
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		currentFragment = mPagerAdapter.getItem(mViewPager.getCurrentItem());
 		
 		try{
@@ -378,39 +380,70 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
         		
         	}else if(tp_consulta == "busca_cb"){
         		
-        		JSONObject json = new JSONObject(str);
+        		final JSONObject json = new JSONObject(str);
         		
         		//builder.setMessage().create().show();
         		
-        		Produto[] produto = new Produto[json.length()];
+        		final Handler handler = new Handler();
         		
-        		Bitmap bitmap;
-        		
-        		for(int i=0;i<json.length();i++){
+        		Thread th = new Thread(new Runnable() {
         			
-        			Produto prod = new Produto();
-        			
-        			/*try {
-        				URL url = new URL(json.getJSONObject("1").getString("img_produto"));
-        				bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+        			public void run() {
         				
-        				prod.setImg(getResizedBitmap(bitmap, 55, 55));
-        			} catch (MalformedURLException e) {
-        				Log.i("ListaCodigoBarra", e.getMessage());
-        			} catch (IOException e) {
-        				Log.i("ListaCodigoBarra", e.getMessage());
-        			}*/
-        			
-        			prod.setNome(json.getJSONObject(Integer.toString(i+1)).getString("nm_produto"));        			
-        			//prod.setPreco(Float.parseFloat(json.getJSONObject(Integer.toString(i+1)).getString("preco_medio").replace(",", ".")));
-        			prod.setPreco(json.getJSONObject(Integer.toString(i+1)).getString("preco_medio"));
-        			produto[i] = prod;
-        			
-        		}       		
-        		
-        		ListaCodigoBarra adapter = new ListaCodigoBarra(currentFragment.getActivity(),R.layout.lista_cd_barra,produto);         
+        				final Produto[] produto = new Produto[json.length()];                		
+                		Bitmap bitmap;                		
+                		URL url = null; 
+    		            InputStream content = null;
+    		            
+    		            try{
+                		
+	                		for(int i=0;i<json.length();i++){
+	                			
+	                			final Produto prod = new Produto();
+	                			
+	                			url = new URL(json.getJSONObject(Integer.toString(i+1)).getString("img_produto"));
+	    		                final Bitmap mIcon1 = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+	    		                
+	    		                handler.post(new Runnable() {
 
-        		produtos_cb.setAdapter(adapter);
+        		                    public void run() {
+        		                    	prod.setImg(getResizedBitmap(mIcon1, 55, 55));
+        		                    }
+        		                });
+	    		                
+	    		                prod.setNome(json.getJSONObject(Integer.toString(i+1)).getString("nm_produto"));        			
+	    	        			//prod.setPreco(Float.parseFloat(json.getJSONObject(Integer.toString(i+1)).getString("preco_medio").replace(",", ".")));
+	    	        			prod.setPreco(json.getJSONObject(Integer.toString(i+1)).getString("preco_medio"));
+	    	        			produto[i] = prod;
+	                			
+	                		}
+	                		
+	                		currentFragment.getActivity().runOnUiThread(new Runnable() {
+	                            @Override
+	                            public void run() {
+	                                // This code will always run on the UI thread, therefore is safe to modify UI elements.
+	                            	ListaCodigoBarra adapter = new ListaCodigoBarra(currentFragment.getActivity(),R.layout.lista_cd_barra,produto);         
+	    	                		
+	    	        	    		produtos_cb.setAdapter(adapter);
+	                            }
+	                        });	                		
+                		
+    		            }catch(JSONException e){
+    		            	// TODO Auto-generated catch block
+    		            	builder.setMessage(e.getMessage()).create().show();
+    		            } catch (MalformedURLException e) {
+							// TODO Auto-generated catch block
+    		            	builder.setMessage(e.getMessage()).create().show();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							builder.setMessage(e.getMessage()).create().show();
+						}
+        				
+        			}
+        			
+        		});
+        		
+        		th.start();
 				
 			}
 					
@@ -430,25 +463,24 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
 				
 			}
 			
-			//builder.setMessage(e.getMessage()).create().show();
-			
 		}
 		
 	}
 	
-	public Bitmap getResizedBitmap(Bitmap bm, int newHeight, int newWidth)
-	{
+	public Bitmap getResizedBitmap(Bitmap bm, int newHeight, int newWidth){
+		
 	    int width = bm.getWidth();
 	    int height = bm.getHeight();
 	    float scaleWidth = ((float) newWidth) / width;
 	    float scaleHeight = ((float) newHeight) / height;
-	    // create a matrix for the manipulation
+
 	    Matrix matrix = new Matrix();
-	    // resize the bit map
+
 	    matrix.postScale(scaleWidth, scaleHeight);
-	    // recreate the new Bitmap
+
 	    Bitmap resizedBitmap = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, false);
 	    return resizedBitmap;
+	    
 	}
  
 }

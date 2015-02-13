@@ -49,9 +49,13 @@ public class ListaCodigoBarra extends ArrayAdapter<Produto> {
 		
 		Produto object = data[position];
 		
-		/*ImageView img = (ImageView) convertView.findViewById(R.id.img_produto);
+		if(object.getImg() != null){
+		
+			ImageView img = (ImageView) convertView.findViewById(R.id.img_produto);
 			
-		img.setImageBitmap(object.getImg());*/
+			img.setImageBitmap(object.getImg());
+		
+		}
 		
 		TextView nm_produto = (TextView) convertView.findViewById(R.id.nm_produto2);
 		nm_produto.setText(object.getNome());
