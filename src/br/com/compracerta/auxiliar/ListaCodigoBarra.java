@@ -1,15 +1,13 @@
 package br.com.compracerta.auxiliar;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import android.app.Activity;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import br.com.compracerta.R;
+import br.com.compracerta.db.*;
 import br.com.entidade.Produto;
 
 public class ListaCodigoBarra extends ArrayAdapter<Produto> {

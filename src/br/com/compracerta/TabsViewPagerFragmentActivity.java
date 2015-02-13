@@ -1,5 +1,6 @@
 package br.com.compracerta;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -19,12 +20,17 @@ import br.com.util.ParametrosGlobais;
 import br.com.compracerta.auxiliar.Retorno;
 import br.com.rede.*;
 import br.com.entidade.*;
+import br.com.compracerta.db.*;
 
 import android.accounts.NetworkErrorException;
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -60,6 +66,7 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
     private BuscaCapt buscaCapt;
     private BuscaNfe buscaNfe;
     private BuscaCB buscaCB;
+    private Long codigoBarra;
 
     private class TabInfo {
          private String tag;
@@ -148,6 +155,8 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
 				String contents = intent.getStringExtra("SCAN_RESULT");
 				String format = intent.getStringExtra("SCAN_RESULT_FORMAT");
 				Log.i("xZing", "contents: "+contents+" format: "+format);
+				
+				this.codigoBarra = Long.parseLong(contents);
 				
 				buscaCB = new BuscaCB(TabsViewPagerFragmentActivity.this, TabsViewPagerFragmentActivity.this, ParametrosGlobais.ORIGEM_ACTIVITY);
 				buscaCB.execute(new String[]{contents});
@@ -348,7 +357,7 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
     					//prod.setPreco(Float.parseFloat(jLinha.getString("valor").replace(",", ".")));
     					prod.setPreco(jLinha.getString("valor").replace(",", "."));
     					//prod.setQuantidade(Integer.parseInt(jLinha.getString("quantidade").replace(",0000", "")));
-    					
+    					    					
     					produto[i] = prod;
     					
     				}
@@ -396,6 +405,10 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
     		            InputStream content = null;
     		            
     		            try{
+    		            	
+    		            	BancoDadosHelper dbHelper = new BancoDadosHelper(currentFragment.getActivity());    		            	
+    		            	SQLiteDatabase db = dbHelper.getWritableDatabase();
+    		        		ContentValues values = new ContentValues();
                 		
 	                		for(int i=0;i<json.length();i++){
 	                			
@@ -411,18 +424,72 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
         		                    }
         		                });
 	    		                
+	    		                values.put(TabelasInfo.EntradaProduto.COLUNA_NOME_PRODUTO, json.getJSONObject(Integer.toString(i+1)).getString("nm_produto"));
+	    		                values.put(TabelasInfo.EntradaProduto.COLUNA_VALOR_PRODUTO, json.getJSONObject(Integer.toString(i+1)).getString("preco_medio"));
+	    		                values.put(TabelasInfo.EntradaProduto.COLUNA_IMG, BitMapToString(getResizedBitmap(mIcon1, 55, 55)));
+	    		                values.put(TabelasInfo.EntradaProduto.COLUNA_CODIGO_BARRA, codigoBarra);
+	    		                
 	    		                prod.setNome(json.getJSONObject(Integer.toString(i+1)).getString("nm_produto"));        			
 	    	        			//prod.setPreco(Float.parseFloat(json.getJSONObject(Integer.toString(i+1)).getString("preco_medio").replace(",", ".")));
 	    	        			prod.setPreco(json.getJSONObject(Integer.toString(i+1)).getString("preco_medio"));
+	    	        			prod.setCdBarra(codigoBarra);
+	    	        			
 	    	        			produto[i] = prod;
 	                			
 	                		}
 	                		
+	                		Cursor cursor2 = db.rawQuery("select * from "+TabelasInfo.EntradaProduto.TABELA_NOME+" where "
+	    	                    	+TabelasInfo.EntradaProduto.COLUNA_CODIGO_BARRA+" = " + codigoBarra,null);
+	                		
+	                		if(cursor2.getCount() == 0){
+	                			
+	                			db.insert(TabelasInfo.EntradaProduto.TABELA_NOME, null, values);
+	                			
+	                		}
+	                    	
+	                    	Cursor cursor = db.rawQuery("select * from "+TabelasInfo.EntradaProduto.TABELA_NOME+" where "
+	                    	+TabelasInfo.EntradaProduto.COLUNA_CODIGO_BARRA+" != " + codigoBarra,null);
+	                    	
+	                    	cursor.moveToFirst();
+
+	                    	int i=0;
+	                    	
+	                    	final Produto[] produto2 = new Produto[cursor.getCount()];
+	                    	
+	                    	for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()){
+	                    		
+	                    		final Produto prod = new Produto();
+
+	                    	    DatabaseUtils.dumpCurrentRowToString(cursor);
+	                    	    String nome = cursor.getString(cursor.getColumnIndex(TabelasInfo.EntradaProduto.COLUNA_NOME_PRODUTO));
+	                    	    
+	                    	    prod.setNome(nome); 
+	                    	    
+	                    	    DatabaseUtils.dumpCurrentRowToString(cursor);
+	                    	    String valor = cursor.getString(cursor.getColumnIndex(TabelasInfo.EntradaProduto.COLUNA_VALOR_PRODUTO));
+	                    	    
+	                    	    prod.setPreco(valor);
+	                    	    
+	                    	    DatabaseUtils.dumpCurrentRowToString(cursor);
+	                    	    String img = cursor.getString(cursor.getColumnIndex(TabelasInfo.EntradaProduto.COLUNA_IMG));
+                    			
+	                    	    prod.setImg(StringToBitMap(img));
+	                    	    
+	                    	    produto2[i] = prod;
+
+	                    	}
+	                    	
+	                    	int aLen = produto.length;
+	                    	int bLen = produto2.length;
+	                    	final Produto[] all_produto= new Produto[aLen+bLen];
+	                    	System.arraycopy(produto, 0, all_produto, 0, aLen);
+	                    	System.arraycopy(produto2, 0, all_produto, aLen, bLen);
+	                    		                		
 	                		currentFragment.getActivity().runOnUiThread(new Runnable() {
 	                            @Override
 	                            public void run() {
 	                                // This code will always run on the UI thread, therefore is safe to modify UI elements.
-	                            	ListaCodigoBarra adapter = new ListaCodigoBarra(currentFragment.getActivity(),R.layout.lista_cd_barra,produto);         
+	                            	ListaCodigoBarra adapter = new ListaCodigoBarra(currentFragment.getActivity(),R.layout.lista_cd_barra,all_produto);         
 	    	                		
 	    	        	    		produtos_cb.setAdapter(adapter);
 	                            }
@@ -466,6 +533,25 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
 		}
 		
 	}
+	
+	public Bitmap StringToBitMap(String encodedString){
+	     try{
+	       byte [] encodeByte=Base64.decode(encodedString,Base64.DEFAULT);
+	       Bitmap bitmap=BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+	       return bitmap;
+	     }catch(Exception e){
+	       e.getMessage();
+	       return null;
+	     }
+	}
+	
+	public String BitMapToString(Bitmap bitmap){
+	        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
+	        bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
+	        byte [] b=baos.toByteArray();
+	        String temp=Base64.encodeToString(b, Base64.DEFAULT);
+	        return temp;
+	  }
 	
 	public Bitmap getResizedBitmap(Bitmap bm, int newHeight, int newWidth){
 		
