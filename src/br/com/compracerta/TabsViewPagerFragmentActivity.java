@@ -390,7 +390,7 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
         			
         			Produto prod = new Produto();
         			
-        			try {
+        			/*try {
         				URL url = new URL(json.getJSONObject("1").getString("img_produto"));
         				bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
         				
@@ -399,7 +399,7 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
         				Log.i("ListaCodigoBarra", e.getMessage());
         			} catch (IOException e) {
         				Log.i("ListaCodigoBarra", e.getMessage());
-        			}
+        			}*/
         			
         			prod.setNome(json.getJSONObject(Integer.toString(i+1)).getString("nm_produto"));        			
         			//prod.setPreco(Float.parseFloat(json.getJSONObject(Integer.toString(i+1)).getString("preco_medio").replace(",", ".")));
