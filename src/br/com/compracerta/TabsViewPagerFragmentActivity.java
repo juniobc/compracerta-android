@@ -146,6 +146,31 @@ public class TabsViewPagerFragmentActivity extends FragmentActivity implements T
     	
     }
     
+    /*public void onActivityResult(int requestCode, int resultCode, Intent intent){
+		
+		if(requestCode == 0){
+			
+			if(resultCode == RESULT_OK){
+				
+				String contents = intent.getStringExtra("SCAN_RESULT");
+				String format = intent.getStringExtra("SCAN_RESULT_FORMAT");
+				Log.i("xZing", "contents: "+contents+" format: "+format);
+				
+				this.codigoBarra = Long.parseLong(contents);
+				
+				buscaCB = new BuscaCB(TabsViewPagerFragmentActivity.this, TabsViewPagerFragmentActivity.this, ParametrosGlobais.ORIGEM_ACTIVITY);
+				buscaCB.execute(new String[]{contents});
+				
+			}else if(resultCode == RESULT_CANCELED){
+				
+				Log.i("xZing", "Cancelled");
+				
+			}
+			
+		}
+		
+	}*/
+    
     public void onActivityResult(int requestCode, int resultCode, Intent intent){
 		
 		if(requestCode == 0){
